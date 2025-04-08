@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 });
 
 // MODIFIED: Path to channels.json - now looking in node_modules
-const CHANNELS_FILE = path.join(__dirname, 'node_modules', 'channels.json');
+const CHANNELS_FILE = path.join(__dirname, 'channels.json');
 
 // Helper function to read channels
 async function readChannels() {
