@@ -1,4 +1,4 @@
-    require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
@@ -8,12 +8,11 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-    origin: "*", // Allow all domains
-    methods: ["GET", "POST", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type"] // Allowed headers
+    origin: "*",
+    methods: ["GET", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type"]
 };
 
-// Apply CORS middleware before routes
 app.use(cors(corsOptions));
 app.use(express.json());
 
@@ -30,8 +29,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// Path to channels.json
-const CHANNELS_FILE = path.join(__dirname, 'channels.json');
+// MODIFIED: Path to channels.json - now looking in node_modules
+const CHANNELS_FILE = path.join(__dirname, 'node_modules', 'channels.json');
 
 // Helper function to read channels
 async function readChannels() {
@@ -40,6 +39,11 @@ async function readChannels() {
         return JSON.parse(data);
     } catch (err) {
         console.error('Error reading channels file:', err);
+        // MODIFIED: Return empty array if file doesn't exist
+        if (err.code === 'ENOENT') {
+            await writeChannels([]); // Create empty file if it doesn't exist
+            return [];
+        }
         return [];
     }
 }
@@ -47,6 +51,8 @@ async function readChannels() {
 // Helper function to write channels
 async function writeChannels(channels) {
     try {
+        // MODIFIED: Ensure directory exists before writing
+        await fs.mkdir(path.dirname(CHANNELS_FILE), { recursive: true });
         await fs.writeFile(CHANNELS_FILE, JSON.stringify(channels, null, 2));
         return true;
     } catch (err) {
@@ -111,13 +117,14 @@ app.delete('/channels/:name', async (req, res) => {
     }
 });
 
-// Root API message (Optional)
+// Root API message
 app.get('/', (req, res) => {
-    res.send("IT WORKED!");
+    res.send("IPTV API Server is running!");
 });
 
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
+    console.log(`Channels file location: ${CHANNELS_FILE}`);
 });
