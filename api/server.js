@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
+const serverless = require('serverless-http');
 
 const app = express();
 
@@ -128,3 +129,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
     console.log(`Channels file location: ${CHANNELS_FILE}`);
 });
+module.exports = app;
+module.exports.handler = serverless(app); // required for Vercel

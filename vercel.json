@@ -1,23 +1,10 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "servers.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/channels.json",
-      "use": "@vercel/static"
-    }
+    { "src": "api/server.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/channels.json",
-      "dest": "/public/channels.json"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/servers.js"
-    }
+    { "src": "/channels", "dest": "/api/server.js" },
+    { "src": "/.*", "dest": "/api/server.js" }
   ]
 }
