@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 });
 
 // MODIFIED: Path to channels.json - now looking in node_modules
-const CHANNELS_FILE = path.join(__dirname, 'channels.json');
+const CHANNELS_FILE = path.join(__dirname, 'public', 'channels.json');
 
 // Helper function to read channels
 async function readChannels() {
@@ -65,12 +65,15 @@ async function writeChannels(channels) {
 // Get all channels
 app.get('/channels', async (req, res) => {
     try {
+        console.log(`Looking for file at: ${CHANNELS_FILE}`);
         const channels = await readChannels();
+        console.log(`Found channels: ${JSON.stringify(channels)}`);
         res.json(channels);
     } catch (err) {
+        console.error('Detailed error:', err);
         res.status(500).json({ error: 'Failed to load channels' });
     }
-});
+});;
 
 // Add a new channel
 app.post('/channels', async (req, res) => {
