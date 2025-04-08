@@ -8,8 +8,8 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "server.js"
+      "src": "/channels.json",
+      "dest": "/node_modules/channels.json"
     }
   ]
 }
